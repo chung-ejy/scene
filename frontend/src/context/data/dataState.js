@@ -1,4 +1,4 @@
-import { GET_DATA, SET_TITLE, SET_TEXT, SET_LOADING, STOP_LOADING, SET_ERROR, CLEAR_ERROR } from "./types";
+import { POST_SENTIMENT,GET_DATA, SET_LOADING, STOP_LOADING, SET_ERROR, CLEAR_ERROR } from "./types";
 import React, { useReducer } from "react";
 import DataContext from "./dataContext"
 import dataReducer from "./dataReducer"
@@ -7,7 +7,7 @@ import axios from "axios"
 const DataState = props => {
     const initialState = {
         title: "Scene",
-        data: {"director":"James Gunn","genre":"Action & Adventure","rating":90,"films":{"movie_title":"Guardian of The Galaxy","audience_rating":92,"directors":"James Gun","genres":"Action & Adventure"},"url":"d96cjJhvlMA"},
+        data: {"movie_title":"Guardians of the Galaxy","director":"James Gunn","genre":"Action & Adventure","rating":90,"youtubeId":"d96cjJhvlMA","films":[]},
         error:null,
         loading:false
     }
@@ -67,6 +67,17 @@ const DataState = props => {
             setError(err.message,"danger")
         });
     }
+    const postSentiment = (data) => {
+        setLoading()
+        axios.post(`/api/data/`,data).then(res=>{
+            dispatch({
+                type:POST_SENTIMENT,
+            })
+        }).catch(err => {
+            stopLoading()
+            setError(err.message,"danger")
+        });
+    }
 
     return (
         <DataContext.Provider value={{
@@ -78,7 +89,8 @@ const DataState = props => {
             setError,
             setTitle,
             setText,
-            getData
+            getData,
+            postSentiment
         }}>
             {props.children}
         </DataContext.Provider>

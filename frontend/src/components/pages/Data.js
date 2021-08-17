@@ -1,14 +1,13 @@
 import React, {useContext,useEffect,Fragment} from 'react';
 import DataContext from "../../context/data/dataContext"
 import Alert from "../alerts/Alert"
-import Sentiment from '../sentiment/Sentiment';
+// import Sentiment from '../sentiment/Sentiment';
 import Form from '../data/Form';
-
+// import Films from "../data/Films"
 const Data = () => {
     const dataContext = useContext(DataContext)
     const {data,loading,title} = dataContext;
     useEffect(() => {
-
     },//eslint-disable-next-line
     [title]
     );
@@ -32,8 +31,9 @@ const Data = () => {
                             <h1 className="card-title text-center mx-2">
                             {title[0].toUpperCase() + title.slice(1)}
                             </h1>
-                            <Sentiment data={data} />
+                            {/* <Sentiment data={data} /> */}
                             <Form data={data}/>
+                            {/* <Films data={data}/> */}
                         </Fragment>
 
                     )

@@ -1,4 +1,4 @@
-import { GET_DATA, SET_TITLE, SET_TEXT, SET_LOADING, STOP_LOADING, SET_ERROR, CLEAR_ERROR } from "./types";
+import { GET_DATA, SET_LOADING, STOP_LOADING, SET_ERROR, CLEAR_ERROR , POST_SENTIMENT} from "./types";
 export default(state,action) => {
     switch(action.type) {
         case SET_ERROR:
@@ -16,21 +16,16 @@ export default(state,action) => {
                 ...state,
                 loading:true
             }
-        case SET_TEXT:
-            return {
-                ...state,
-                text: action.payload
-            }
-        case SET_TITLE:
-            return {
-                ...state,
-                title:action.payload
-            }
         case GET_DATA:
             return {
                 ...state,
                 data:action.payload,
                 loading:false
+            }
+        case POST_SENTIMENT:
+                return {
+                    ...state,
+                    loading:false
             }
     }
 }

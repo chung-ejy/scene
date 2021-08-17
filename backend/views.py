@@ -24,33 +24,46 @@ def backendView(request):
     try:
         genre = info["genre"]
         director = info["director"]
-        rating = int(info["rating"])
-        if genre == "":
-            query_identifier = "directors"
-            query = director
-        else:
-            query_identifier = "genres"
-            query = genre
-        films = pd.DataFrame([row[1] for row in movies.iterrows() if query in row[1][query_identifier] and int(row[1]["audience_rating"]) >= rating])
+        rating = info["rating"]
+        query_identifiers = {}
+        if genre != "":
+            query_identifiers["genres"] = genre
+        if rating != "":
+            query_identifiers["rating"] = int(rating)
+        if director != "":
+            query_identifiers["directors"] = director
+        films = movies.copy()
+        for query_identifier in query_identifiers.keys():
+            new_data = []
+            for row in films.iterrows():
+                if query_identifier == "rating":
+                    if row[1]["audience_rating"] >= query_identifiers[query_identifier]:
+                        new_data.append(row[1])
+                else:
+                    if query_identifiers[query_identifier] in row[1][query_identifier]:
+                        new_data.append(row[1])
+            films = pd.DataFrame(new_data)
         complete = info
         rec_films = films.sort_values("audience_rating",ascending=False)[["movie_title","audience_rating","directors","genres"]].sample(frac=1)
-        complete["films"] = {}
-        for row in rec_films.iterrows():
-            title = str(row[1]["movie_title"]).replace(" ","")
-            trailer = trailers[trailers["title"]==title]["youtubeId"]
-            if len(trailer) > 0:
-                if len(trailer) > 1:
-                    complete["url"] = trailer[0].item()
-                else:
-                    complete["url"] = trailer.item()
-                complete["films"] = row[1].to_dict()
-                break
-            else:
-                continue
-        if complete["films"] == {}:
-            complete["url"] = "dQw4w9WgXcQ"  
+        complete = {}
+        rec_films.rename(columns={"audience_rating":"rating","directors":"director","genres":"genre"},inplace=True)
+        rec_films["title"] = [str(x.replace(" ","")) for x in rec_films["movie_title"]]
+        rec_films = rec_films.merge(trailers,on="title",how="left").dropna()
+        complete = rec_films[["movie_title","rating","director","genre","youtubeId"]].iloc[0].to_dict()
+        complete["films"]=list(rec_films[["movie_title","rating","director","genre","youtubeId"]].sort_values("rating",ascending=False).to_dict("records"))
     except Exception as e:
-        complete = info
-        complete["films"] = {}
+        complete = {}
         print(str(e))
+    complete["sentiment"] = False
     return JsonResponse(complete,safe=False)
+
+@csrf_exempt
+def postView(request):
+    info = json.loads(request.body.decode("utf-8"))
+    try:
+        db = client["scene"]
+        table = db["user_data"]
+        table.insert(info)
+    except Exception as e:
+        print("rekt",str(e))
+    return JsonResponse({"hi":"hi"},safe=False)
