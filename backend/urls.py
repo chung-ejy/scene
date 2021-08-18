@@ -3,5 +3,6 @@ from django.urls import path
 
 urlpatterns = [
     path("",views.backendView,name="api"),
-    path("data/",views.postView,name="data")
+    path("data/",views.postView,name="data"),
+    path("genres/",views.getGenre,name="genres")
 ]

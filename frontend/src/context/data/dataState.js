@@ -1,4 +1,4 @@
-import { POST_SENTIMENT,GET_DATA, SET_LOADING, STOP_LOADING, SET_ERROR, CLEAR_ERROR } from "./types";
+import { GET_GENRES, SET_FILM, POST_SENTIMENT,GET_DATA, SET_LOADING, STOP_LOADING, SET_ERROR, CLEAR_ERROR } from "./types";
 import React, { useReducer } from "react";
 import DataContext from "./dataContext"
 import dataReducer from "./dataReducer"
@@ -9,7 +9,8 @@ const DataState = props => {
         title: "Scene",
         data: {"movie_title":"Guardians of the Galaxy","director":"James Gunn","genre":"Action & Adventure","rating":90,"youtubeId":"d96cjJhvlMA","films":[]},
         error:null,
-        loading:false
+        loading:false,
+        genres:[]
     }
 
     const [state,dispatch] = useReducer(dataReducer,initialState)
@@ -67,6 +68,31 @@ const DataState = props => {
             setError(err.message,"danger")
         });
     }
+
+    const getGenres = () => {
+        setLoading()
+        axios.post(`/api/genres/`).then(res=>{
+            dispatch({
+                type:GET_GENRES,
+                payload:res.data.genres
+            })
+        }).catch(err => {
+            stopLoading()
+            setError(err.message,"danger")
+        });
+    }
+
+    const setFilm = (data) => {
+        setLoading()
+        dispatch({
+            type:SET_FILM,
+            payload:data
+        }).catch(err => {
+            stopLoading()
+            setError(err.message,"danger")
+        })
+    }
+
     const postSentiment = (data) => {
         setLoading()
         axios.post(`/api/data/`,data).then(res=>{
@@ -86,11 +112,14 @@ const DataState = props => {
             error:state.error,
             title:state.title,
             text:state.text,
+            genres:state.genres,
             setError,
             setTitle,
             setText,
             getData,
-            postSentiment
+            postSentiment,
+            setFilm,
+            getGenres
         }}>
             {props.children}
         </DataContext.Provider>

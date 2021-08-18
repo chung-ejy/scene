@@ -3,11 +3,13 @@ import DataContext from "../../context/data/dataContext"
 import Alert from "../alerts/Alert"
 // import Sentiment from '../sentiment/Sentiment';
 import Form from '../data/Form';
-// import Films from "../data/Films"
+import Film from "../data/Film"
+import Films from "../data/Films"
 const Data = () => {
     const dataContext = useContext(DataContext)
-    const {data,loading,title} = dataContext;
+    const {data,loading,title,getGenres,genres} = dataContext;
     useEffect(() => {
+        getGenres()
     },//eslint-disable-next-line
     [title]
     );
@@ -23,7 +25,7 @@ const Data = () => {
                             <i className="fas fa-spinner text-primary fa-7x"></i>
                         </h3>
                         <h3 className="text-center mt-3">
-                            {"data: ???"}
+                            {"loading..."}
                         </h3>
                     </div>) : (
                         <Fragment>
@@ -31,9 +33,9 @@ const Data = () => {
                             <h1 className="card-title text-center mx-2">
                             {title[0].toUpperCase() + title.slice(1)}
                             </h1>
-                            {/* <Sentiment data={data} /> */}
-                            <Form data={data}/>
-                            {/* <Films data={data}/> */}
+                            <Film data={data}/>
+                            <Form />
+                            <Films />
                         </Fragment>
 
                     )

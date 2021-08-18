@@ -1,4 +1,4 @@
-import { GET_DATA, SET_LOADING, STOP_LOADING, SET_ERROR, CLEAR_ERROR , POST_SENTIMENT} from "./types";
+import { GET_GENRES, SET_FILM, GET_DATA, SET_LOADING, STOP_LOADING, SET_ERROR, CLEAR_ERROR , POST_SENTIMENT} from "./types";
 export default(state,action) => {
     switch(action.type) {
         case SET_ERROR:
@@ -17,6 +17,18 @@ export default(state,action) => {
                 loading:true
             }
         case GET_DATA:
+            return {
+                ...state,
+                data:action.payload,
+                loading:false
+            }
+        case GET_GENRES:
+            return {
+                ...state,
+                genres:action.payload,
+                loading:false
+            }
+        case SET_FILM:
             return {
                 ...state,
                 data:action.payload,
