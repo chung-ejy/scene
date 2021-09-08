@@ -1,0 +1,10 @@
+node_modules/
+package-lock.json
+*/.env*
+*.csv
+*.env*
+*/__pycache__/*
+*/.env*
+*boiler.ipynb*
+db.sqlite3
+*./ml/.env*

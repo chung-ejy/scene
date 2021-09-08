@@ -5,9 +5,13 @@ import pandas as pd
 import json
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime, timedelta
-import requests
 from pymongo import MongoClient
 import math
+import requests as r
+from dotenv import load_dotenv
+load_dotenv()
+import os
+token = os.getenv("GOOGLE_API")
 client = MongoClient("localhost",27017)
 db = client["scene"]
 table = db["movies"]
@@ -18,11 +22,6 @@ movies["genres"] = [x.lower() for x in movies["genres"]]
 movies["directors"] = [x.lower() for x in movies["directors"]]
 movies["rating"] = [round(x/20,1) for x in movies["audience_rating"]]
 movies = movies.groupby(by=["genres","directors","movie_title"]).mean().reset_index()
-table = db["trailers"]
-data = table.find(show_record_id=False)
-trailers =  pd.DataFrame(list(data))
-trailers["title"] = ["" .join(x.split(" ")[:-1]).replace(" ","") for x in trailers["title"]]
-trailers.dropna(inplace=True)
 @csrf_exempt
 def backendView(request):
     info = json.loads(request.body.decode("utf-8"))
@@ -53,11 +52,21 @@ def backendView(request):
         complete = {}
         rec_films.rename(columns={"directors":"director","genres":"genre"},inplace=True)
         rec_films["title"] = [str(x.replace(" ","")) for x in rec_films["movie_title"]]
-        rec_films = rec_films.merge(trailers,on="title",how="left").dropna()
         rec_films["director"] = [x.title() for x in rec_films["director"]]
-        complete = rec_films[["movie_title","rating","director","genre","youtubeId"]].iloc[0].to_dict()
+        complete = rec_films[["movie_title","rating","director","genre"]].iloc[0].to_dict()
+        params = {"part":"snippet"}
+        query = complete['movie_title'] + ' trailer'
+        test = r.get(f"https://www.googleapis.com/youtube/v3/search?q={query}&key={token}",params=params).json()
+        complete["youtubeId"] = test['items'][0]["id"]["videoId"]
         complete["director"] = complete["director"].title()
-        complete["films"]=list(rec_films[["movie_title","rating","director","genre","youtubeId"]].sort_values("rating",ascending=False).iloc[:10].to_dict("records"))
+        films = rec_films[["movie_title","rating","director","genre"]].sort_values("rating",ascending=False).iloc[:10]
+        youtubeIds = []
+        for movie_title in films["movie_title"]:
+            query = movie_title + ' trailer'
+            test = r.get(f"https://www.googleapis.com/youtube/v3/search?q={query}&key={token}",params=params).json()
+            youtubeIds.append(test['items'][0]["id"]["videoId"])
+        films["youtubeId"] = youtubeIds
+        complete["films"]=list(films.to_dict("records"))
     except Exception as e:
         complete = {"movie_title":"Not Found"
                     ,"rating":"Not Found"

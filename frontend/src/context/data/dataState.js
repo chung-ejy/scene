@@ -71,7 +71,7 @@ const DataState = props => {
 
     const getGenres = () => {
         setLoading()
-        axios.post(`/api/genres/`).then(res=>{
+        axios.get(`/api/genres/`).then(res=>{
             dispatch({
                 type:GET_GENRES,
                 payload:res.data.genres
