@@ -14,7 +14,7 @@ import os
 import certifi
 uri = os.getenv("MONGO_URI")
 token = os.getenv("GOOGLE_API")
-client = MongoClient(uri,tlsCAFile=certifi.where())
+client = MongoClient(uri,27017,tlsCAFile=certifi.where())
 db = client["scene"]
 table = db["movies"]
 data = table.find(show_record_id=False)
