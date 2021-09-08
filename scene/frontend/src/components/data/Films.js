@@ -26,7 +26,7 @@ const Films = () => {
                 <tbody>
                     <tr>
                         <th scope="col">Movie Title</th>
-                        <th className="d-none d-sm-none d-md-block" scope="col">Director</th>
+                        <th className="d-none d-sm-none d-md-none d-lg-none d-xl-block" scope="col">Director</th>
                         <th className="d-none d-sm-none d-md-none d-lg-none d-xl-block" scope="col">Genre</th>
                         <th scope="col">
                         <form className="form-inline">
@@ -56,7 +56,7 @@ const Films = () => {
                                                     outline: "inherit"}}type="submit">{film["movie_title"]}</button>
                                 </div>
                             </form></td>
-                            <td className="d-none d-sm-none d-md-none d-lg-block">{film["director"]}</td>
+                            <td className="d-none d-sm-none d-md-none d-lg-none d-xl-block">{film["director"]}</td>
                             <td className="d-none d-sm-none d-md-none d-lg-none d-xl-block">{film["genre"]}</td>
                             <td>{`${film["rating"]}    `}</td>
                         </tr> : <tr></tr>
