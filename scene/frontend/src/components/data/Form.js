@@ -26,7 +26,6 @@ const Form = () => {
                 {Object.keys(state).map(key =>(
                     key == "genre"  ? 
                     <div class="form-group">
-                        {/* <label for="exampleFormControlSelect1">Example select</label> */}
                         <select class="form-control" id="exampleFormControlSelect1">
                         {genres.map(genre => <option>{genre}</option>)}
                         </select>

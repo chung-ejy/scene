@@ -7,7 +7,7 @@ import axios from "axios"
 const DataState = props => {
     const initialState = {
         title: "Scene",
-        data: {"movie_title":"Guardians of the Galaxy","director":"James Gunn","genre":"Action & Adventure","rating":90,"youtubeId":"d96cjJhvlMA","films":[]},
+        data: {"movie_title":"Guardians of the Galaxy","director":"James Gunn","genre":"Action & Adventure","rating":4.6,"youtubeId":"d96cjJhvlMA","films":[]},
         error:null,
         loading:false,
         genres:[]
