@@ -11,8 +11,9 @@ import requests as r
 from dotenv import load_dotenv
 load_dotenv()
 import os
+uri = os.getenv("MONGO_URI")
 token = os.getenv("GOOGLE_API")
-client = MongoClient("localhost",27017)
+client = MongoClient(uri,tlsCAFile=certifi.where())
 db = client["scene"]
 table = db["movies"]
 data = table.find(show_record_id=False)
