@@ -1,10 +1,14 @@
-import React from 'react'
+import React, {useContext} from 'react'
+import DataContext from '../../context/data/dataContext'
 
 const Film = ({data}) => {
     const {youtubeId,title} = data
+    const dataContext = useContext(DataContext)
+    const { postSentiment } = dataContext
     const onSentiment = (e) =>{
         e.preventDefault()
         const pack = data
+        console.log(data)
         pack["sentiment"] = e.target.name
         postSentiment(pack)
     }

@@ -26,9 +26,9 @@ const Films = () => {
                 <tbody>
                     <tr>
                         <th scope="col">Movie Title</th>
-                        <th className="d-none d-sm-none d-md-none d-lg-none d-xl-block" scope="col">Director</th>
-                        <th className="d-none d-sm-none d-md-none d-lg-none d-xl-block" scope="col">Genre</th>
-                        <th scope="col">
+                        <th className="d-none d-lg-block" scope="col">Director</th>
+                        <th scope="col">Genre</th>
+                        <th className="d-none d-lg-block" scope="col">
                         <form className="form-inline">
                             <div className="form-group">
                                 <input onChange={onRatingChange} className="form-control" style = {{color: "inherit",
@@ -37,7 +37,7 @@ const Films = () => {
                                                                                                     font: "inherit",
                                                                                                     cursor: "pointer",
                                                                                                     outline: "inherit"}}
-                                name="rating" placeholder="RATING" type="number" value={state["rating"]} />
+                                name="rating" placeholder="Rating" type="number" value={state["rating"]} />
                             </div>
                         </form>
                         </th>
@@ -56,9 +56,9 @@ const Films = () => {
                                                     outline: "inherit"}}type="submit">{film["movie_title"]}</button>
                                 </div>
                             </form></td>
-                            <td className="d-none d-sm-none d-md-none d-lg-none d-xl-block">{film["director"]}</td>
-                            <td className="d-none d-sm-none d-md-none d-lg-none d-xl-block">{film["genre"]}</td>
-                            <td>{`${film["rating"]}    `}</td>
+                            <td className="d-none d-lg-block">{film["director"]}</td>
+                            <td >{film["genre"]}</td>
+                            <td className="d-none d-lg-block">{`${film["rating"]}    `}</td>
                         </tr> : <tr></tr>
                     ))}
                 </tbody>
