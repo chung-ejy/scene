@@ -2,6 +2,12 @@ import React from 'react'
 
 const Film = ({data}) => {
     const {youtubeId,title} = data
+    const onSentiment = (e) =>{
+        e.preventDefault()
+        const pack = data
+        pack["sentiment"] = e.target.name
+        postSentiment(pack)
+    }
     return (
         <div className="card card-body mt-4 mb-4">
             <div style={{height:"100%"}}class="row text-center">
@@ -25,6 +31,18 @@ const Film = ({data}) => {
                     ))}
                 </tbody>
             </table>
+            </div>
+            <div className="row mt-2">
+                <form className="col" onSubmit={onSentiment} name="like">
+                    <div className="form-group col">
+                        <button type="submit" name="like" class="btn btn-primary form-control bg-info">Like</button>
+                    </div>
+                </form>
+                <form className="col" onSubmit={onSentiment} name="dislike">
+                    <div className="form-group col">
+                        <button type="submit" name="dislike" class="btn btn-primary form-control bg-danger">Dislike</button>
+                    </div>
+                </form>
             </div>
         </div>
     )

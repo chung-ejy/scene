@@ -13,12 +13,12 @@ const Form = () => {
         getData(state)
         setState({...data})
     }
-    const onSentiment = (e) =>{
-        e.preventDefault()
-        const pack = data
-        pack["sentiment"] = e.target.name
-        postSentiment(pack)
-    }
+    // const onSentiment = (e) =>{
+    //     e.preventDefault()
+    //     const pack = data
+    //     pack["sentiment"] = e.target.name
+    //     postSentiment(pack)
+    // }
 
     return (
         <div className="card card-body mt-4 mb-4">
@@ -45,7 +45,7 @@ const Form = () => {
                     <button type="submit" class="btn btn-primary form-control">Recommend</button>
                 </div>
             </form>
-            <div className="row mt-2">
+            {/* <div className="row mt-2">
                 <form className="col" onSubmit={onSentiment} name="like">
                     <div className="form-group col">
                         <button type="submit" name="like" class="btn btn-primary form-control bg-info">Like</button>
@@ -56,7 +56,7 @@ const Form = () => {
                         <button type="submit" name="dislike" class="btn btn-primary form-control bg-danger">Dislike</button>
                     </div>
                 </form>
-            </div>
+            </div> */}
         </div>
     )
 }
