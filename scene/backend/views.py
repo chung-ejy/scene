@@ -11,6 +11,7 @@ import requests as r
 from dotenv import load_dotenv
 load_dotenv()
 import os
+import certifi
 uri = os.getenv("MONGO_URI")
 token = os.getenv("GOOGLE_API")
 client = MongoClient(uri,tlsCAFile=certifi.where())
