@@ -59,7 +59,10 @@ def backendView(request):
         params = {"part":"snippet"}
         query = complete['movie_title'] + ' trailer'
         test = r.get(f"https://www.googleapis.com/youtube/v3/search?q={query}&key={token}",params=params).json()
-        complete["youtubeId"] = test['items'][0]["id"]["videoId"]
+        if "error" in test.keys():
+            complete["youtubeId"] = ""
+        else:
+            complete["youtubeId"] = test['items'][0]["id"]["videoId"]
         complete["director"] = complete["director"].title()
         films = rec_films[["movie_title","rating","director","genre"]].sort_values("rating",ascending=False).iloc[:10]
         complete["films"]=list(films.to_dict("records"))
@@ -107,11 +110,6 @@ def getYoutubeId(request):
         complete = info
     except Exception as e:
         print(str(e))
-        complete = {"movie_title":"Not Found"
-            ,"rating":"Not Found"
-            ,"director":"Not Found"
-            ,"genre":"Not Found"
-            ,"youtubeId":"Not Found"
-            ,"films":[]}
-        complete = {}
+        complete = info
+        complete["youtubeId"] = ""
     return JsonResponse(complete,safe=False)
