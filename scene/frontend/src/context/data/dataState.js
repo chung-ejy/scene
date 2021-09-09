@@ -84,9 +84,12 @@ const DataState = props => {
 
     const setFilm = (data) => {
         setLoading()
-        dispatch({
-            type:SET_FILM,
-            payload:data
+        axios.post('/api/youtube/',data).then(res => {
+            data["youtubeId"] = res.data.youtubeId
+            dispatch({
+                type:SET_FILM,
+                payload:data
+            })  
         }).catch(err => {
             stopLoading()
             setError(err.message,"danger")

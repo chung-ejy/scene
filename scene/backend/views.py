@@ -62,12 +62,6 @@ def backendView(request):
         complete["youtubeId"] = test['items'][0]["id"]["videoId"]
         complete["director"] = complete["director"].title()
         films = rec_films[["movie_title","rating","director","genre"]].sort_values("rating",ascending=False).iloc[:10]
-        youtubeIds = []
-        for movie_title in films["movie_title"]:
-            query = movie_title + ' trailer'
-            test = r.get(f"https://www.googleapis.com/youtube/v3/search?q={query}&key={token}",params=params).json()
-            youtubeIds.append(test['items'][0]["id"]["videoId"])
-        films["youtubeId"] = youtubeIds
         complete["films"]=list(films.to_dict("records"))
     except Exception as e:
         complete = {"movie_title":"Not Found"
@@ -101,3 +95,23 @@ def getGenre(request):
     final.sort()
     final.append("None")
     return JsonResponse({"genres":final},safe=False)
+
+@csrf_exempt
+def getYoutubeId(request):
+    try:
+        params = {"part":"snippet"}
+        info = json.loads(request.body.decode("utf-8"))
+        query = info["movie_title"] + ' trailer'
+        test = r.get(f"https://www.googleapis.com/youtube/v3/search?q={query}&key={token}",params=params).json()
+        info["youtubeId"] = test['items'][0]["id"]["videoId"]
+        complete = info
+    except Exception as e:
+        print(str(e))
+        complete = {"movie_title":"Not Found"
+            ,"rating":"Not Found"
+            ,"director":"Not Found"
+            ,"genre":"Not Found"
+            ,"youtubeId":"Not Found"
+            ,"films":[]}
+        complete = {}
+    return JsonResponse(complete,safe=False)
