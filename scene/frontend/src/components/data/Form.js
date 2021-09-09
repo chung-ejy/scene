@@ -13,16 +13,10 @@ const Form = () => {
         getData(state)
         setState({...data})
     }
-    // const onSentiment = (e) =>{
-    //     e.preventDefault()
-    //     const pack = data
-    //     pack["sentiment"] = e.target.name
-    //     postSentiment(pack)
-    // }
 
     return (
         <div className="card card-body mt-4 mb-4">
-            <h7 className="text-danger">Fill out any of the three;</h7>
+            <h7 className="text-danger">Fill out any of the three:</h7>
             <form onSubmit={onSubmit}>
                 {Object.keys(state).map(key =>(
                     key == "genre"  ? 
