@@ -55,16 +55,9 @@ def backendView(request):
         rec_films.rename(columns={"directors":"director","genres":"genre"},inplace=True)
         rec_films["title"] = [str(x.replace(" ","")) for x in rec_films["movie_title"]]
         rec_films["director"] = [x.title() for x in rec_films["director"]]
-        complete = rec_films[["movie_title","rating","director","genre"]].iloc[0].to_dict()
-        params = {"part":"snippet"}
-        query = complete['movie_title'] + ' trailer'
-        test = r.get(f"https://www.googleapis.com/youtube/v3/search?q={query}&key={token}",params=params).json()
-        if "error" in test.keys():
-            complete["youtubeId"] = ""
-        else:
-            complete["youtubeId"] = test['items'][0]["id"]["videoId"]
+        complete = rec_films[["movie_title","rating","director","genre","youtubeId"]].iloc[0].to_dict()
         complete["director"] = complete["director"].title()
-        films = rec_films[["movie_title","rating","director","genre"]].sort_values("rating",ascending=False).iloc[:10]
+        films = rec_films[["movie_title","rating","director","genre","youtubeId"]].sort_values("rating",ascending=False).iloc[:10]
         complete["films"]=list(films.to_dict("records"))
     except Exception as e:
         complete = {"movie_title":"Not Found"
@@ -99,17 +92,17 @@ def getGenre(request):
     final.append("None")
     return JsonResponse({"genres":final},safe=False)
 
-@csrf_exempt
-def getYoutubeId(request):
-    try:
-        params = {"part":"snippet"}
-        info = json.loads(request.body.decode("utf-8"))
-        query = info["movie_title"] + ' trailer'
-        test = r.get(f"https://www.googleapis.com/youtube/v3/search?q={query}&key={token}",params=params).json()
-        info["youtubeId"] = test['items'][0]["id"]["videoId"]
-        complete = info
-    except Exception as e:
-        print(str(e))
-        complete = info
-        complete["youtubeId"] = ""
-    return JsonResponse(complete,safe=False)
+# @csrf_exempt
+# def getYoutubeId(request):
+#     try:
+#         params = {"part":"snippet"}
+#         info = json.loads(request.body.decode("utf-8"))
+#         query = info["movie_title"] + ' trailer'
+#         test = r.get(f"https://www.googleapis.com/youtube/v3/search?q={query}&key={token}",params=params).json()
+#         info["youtubeId"] = test['items'][0]["id"]["videoId"]
+#         complete = info
+#     except Exception as e:
+#         print(str(e))
+#         complete = info
+#         complete["youtubeId"] = ""
+#     return JsonResponse(complete,safe=False)
