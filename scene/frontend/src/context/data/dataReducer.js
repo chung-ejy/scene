@@ -4,7 +4,8 @@ export default(state,action) => {
         case SET_ERROR:
             return {
                 ...state,
-                error: {msg:"rekt",type:"big sadge"}
+                error: {msg:"rekt",type:"big sadge"},
+                data:{"movie_title":"Guardians of the Galaxy","director":"James Gunn","genre":"Action & Adventure","rating":4.6,"youtubeId":"d96cjJhvlMA","films":[]},
             }
         case CLEAR_ERROR:
             return {

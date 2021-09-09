@@ -11,10 +11,8 @@ const Films = () => {
     }
     const onSelect = (e) =>{
         e.preventDefault()
-        console.log(e.target.name)
         const selection = films.filter(film => e.target.name == film["movie_title"])[0]
         selection["films"] = films
-        console.log(selection)
         setFilm(selection)
     }
 
@@ -37,7 +35,7 @@ const Films = () => {
                                                                                                     font: "inherit",
                                                                                                     cursor: "pointer",
                                                                                                     outline: "inherit"}}
-                                name="rating" placeholder="Rating" type="number" value={state["rating"]} />
+                                name="rating" placeholder="RATING" type="number" min="1" max="5" value={state["rating"]} />
                             </div>
                         </form>
                         </th>

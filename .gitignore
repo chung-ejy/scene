@@ -8,3 +8,4 @@ package-lock.json
 *boiler.ipynb*
 db.sqlite3
 *./ml/.env*
+*.ipynb*

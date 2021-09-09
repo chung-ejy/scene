@@ -22,6 +22,7 @@ const Form = () => {
 
     return (
         <div className="card card-body mt-4 mb-4">
+            <h7 className="text-danger">Fill out any of the three;</h7>
             <form onSubmit={onSubmit}>
                 {Object.keys(state).map(key =>(
                     key == "genre"  ? 
@@ -35,8 +36,8 @@ const Form = () => {
                         <input onChange={onChange} className="form-control" 
                         name={key} placeholder={key} type={"text"} value={state[key]} />
                     </div> : key == "rating"  ?
-                    <div className="form-group mt-4 mb-4">
-                    <label className="mr-4" for="formRange">{`Rating: ${state["rating"]} `}</label>
+                    <div className="form-group ml-5 mt-4 mb-4">
+                    <label className="mr-1" for="formRange">{`Rating: ${state["rating"]} `}</label>
                     <input onChange={onChange} className="form-range"
                         name={key} placeholder={key} type="range" step="0.1" min="0" max="5" value={state[key]} />
                     </div> : <div></div>

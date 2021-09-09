@@ -82,18 +82,15 @@ const DataState = props => {
         });
     }
 
-    const setFilm = (data) => {
+    const setFilm = (selection) => {
         setLoading()
-        axios.post('/api/youtube/',data).then(res => {
-            data["youtubeId"] = res.data.youtubeId
             dispatch({
                 type:SET_FILM,
-                payload:data
-            })  
-        }).catch(err => {
+                payload:selection
+            }).catch(err => {
             stopLoading()
             setError(err.message,"danger")
-        })
+        });
     }
 
     const postSentiment = (data) => {
