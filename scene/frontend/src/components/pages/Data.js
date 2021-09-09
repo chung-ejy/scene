@@ -33,8 +33,8 @@ const Data = () => {
                             <h1 className="card-title text-center mx-2">
                             {title[0].toUpperCase() + title.slice(1)}
                             </h1>
-                            <Film data={data}/>
                             <Form />
+                            <Film data={data}/>
                             <Films />
                         </Fragment>
 
