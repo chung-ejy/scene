@@ -14,48 +14,30 @@ import os
 import certifi
 
 uri = os.getenv("MONGO_URI")
-client = MongoClient(uri,27017,tlsCAFile=certifi.where())
-db = client["scene"]
-table = db["movies"]
-data = table.find(show_record_id=False)
-movies =  pd.DataFrame(list(data))
-movies.dropna(inplace=True)
-movies["genres"] = [x.lower() for x in movies["genres"]]
-movies["directors"] = [x.lower() for x in movies["directors"]]
-movies["rating"] = [round(x/20,1) for x in movies["audience_rating"]]
-movies = movies.groupby(by=["genres","directors","movie_title","youtubeId"]).mean().reset_index()
 
 @csrf_exempt
 def backendView(request):
     info = json.loads(request.body.decode("utf-8"))
     try:
-        genre = info["genre"]
-        director = info["director"]
-        rating = info["rating"]
-        query_identifiers = {}
-        if genre != "" and genre != "None":
-            query_identifiers["genres"] = genre.lower()
-        if rating != "":
-            query_identifiers["rating"] = float(rating)
-        if director != "":
-            query_identifiers["directors"] = director.lower()
-        films = movies.copy()
-        for query_identifier in query_identifiers.keys():
-            new_data = []
-            for row in films.iterrows():
-                if query_identifier == "rating":
-                    if row[1]["rating"] >= query_identifiers[query_identifier]:
-                        new_data.append(row[1])
-                else:
-                    if query_identifiers[query_identifier] in row[1][query_identifier]:
-                        new_data.append(row[1])
-            films = pd.DataFrame(new_data)
-        rec_films = films.sort_values("rating",ascending=False)[["movie_title","rating","directors","genres","youtubeId"]].sample(frac=1)
+        genre = " ".join([x.title() for x in info["genre"].split(" ")])
+        director = " ".join([x.title() for x in info["director"].split(" ")])
+        if info["rating"] != "" : 
+            rating = float(info["rating"]) 
+        else:
+            rating =  0.0
+        client = MongoClient(uri,27017,tlsCAFile=certifi.where())
+        db = client["scene"]
+        data = db["movies"].find({
+                                    'genres':{'$regex':f"^.*{genre}.*$"},
+                                'directors':{'$regex':f"^.*{director}.*$"}
+                                ,"audience_rating":{"$gte":rating*20}
+                                },show_record_id=False)
+        client.close()
+        films = pd.DataFrame(list(data))
+        films["rating"] = [float(x/20) for x in films["audience_rating"]]
+        rec_films = films.sort_values("rating",ascending=False)[["movie_title","rating","directors","genres","youtubeId"]]
         rec_films.rename(columns={"directors":"director","genres":"genre"},inplace=True)
-        rec_films["title"] = [str(x.replace(" ","")) for x in rec_films["movie_title"]]
-        rec_films["director"] = [x.title() for x in rec_films["director"]]
         complete = rec_films[["movie_title","rating","director","genre","youtubeId"]].iloc[0].to_dict()
-        complete["director"] = complete["director"].title()
         films = rec_films[["movie_title","rating","director","genre","youtubeId"]].sort_values("rating",ascending=False).iloc[:10]
         complete["films"]=list(films.to_dict("records"))
     except Exception as e:
@@ -82,6 +64,11 @@ def postView(request):
 
 @csrf_exempt
 def getGenre(request):
+    client = MongoClient(uri,27017,tlsCAFile=certifi.where())
+    db = client["scene"]
+    data = db["movies"].find({},show_record_id=False)
+    client.close()
+    movies = pd.DataFrame(list(data))
     genres = list(movies["genres"].unique())
     consolidate = []
     for genre in genres:
