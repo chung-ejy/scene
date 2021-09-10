@@ -4,12 +4,14 @@ import DataContext from '../../context/data/dataContext'
 const Form = () => {
     const dataContext = useContext(DataContext)
     const {getData,postSentiment,genres,data} = dataContext
-    const [state,setState] = useState({"director":"","genre":"","rating":""})
+    const [state,setState] = useState({"director":"","genre":"Action & Adventure","rating":"3"})
     const onChange = (e) => {
         setState({...state,[e.target.name]:e.target.value});
+        console.log(state)
     }
     const onSubmit = (e) => {
         e.preventDefault()
+        console.log(state)
         getData(state)
         setState({...data})
     }
@@ -21,7 +23,7 @@ const Form = () => {
                 {Object.keys(state).map(key =>(
                     key == "genre"  ? 
                     <div class="form-group">
-                        <select class="form-control" id="exampleFormControlSelect1">
+                        <select name="genre" onChange={onChange} class="form-control" id="exampleFormControlSelect1">
                         {genres.map(genre => <option>{genre}</option>)}
                         </select>
                     </div>
