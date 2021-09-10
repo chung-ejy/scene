@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 import certifi
+
 uri = os.getenv("MONGO_URI")
 client = MongoClient(uri,27017,tlsCAFile=certifi.where())
 db = client["scene"]
@@ -22,7 +23,8 @@ movies.dropna(inplace=True)
 movies["genres"] = [x.lower() for x in movies["genres"]]
 movies["directors"] = [x.lower() for x in movies["directors"]]
 movies["rating"] = [round(x/20,1) for x in movies["audience_rating"]]
-movies = movies.groupby(by=["genres","directors","movie_title"]).mean().reset_index()
+movies = movies.groupby(by=["genres","directors","movie_title","youtubeId"]).mean().reset_index()
+
 @csrf_exempt
 def backendView(request):
     info = json.loads(request.body.decode("utf-8"))
@@ -48,9 +50,7 @@ def backendView(request):
                     if query_identifiers[query_identifier] in row[1][query_identifier]:
                         new_data.append(row[1])
             films = pd.DataFrame(new_data)
-        complete = info
-        rec_films = films.sort_values("rating",ascending=False)[["movie_title","rating","directors","genres"]].sample(frac=1)
-        complete = {}
+        rec_films = films.sort_values("rating",ascending=False)[["movie_title","rating","directors","genres","youtubeId"]].sample(frac=1)
         rec_films.rename(columns={"directors":"director","genres":"genre"},inplace=True)
         rec_films["title"] = [str(x.replace(" ","")) for x in rec_films["movie_title"]]
         rec_films["director"] = [x.title() for x in rec_films["director"]]
@@ -65,7 +65,7 @@ def backendView(request):
                     ,"genre":"Not Found"
                     ,"youtubeId":"Not Found"
                     ,"films":[]}
-        print(str(e))
+        print(str(e),films.columns)
     complete["sentiment"] = False
     return JsonResponse(complete,safe=False)
 
