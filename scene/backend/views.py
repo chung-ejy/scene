@@ -66,9 +66,9 @@ def postView(request):
 def getGenre(request):
     client = MongoClient(uri,27017,tlsCAFile=certifi.where())
     db = client["scene"]
-    data = db["movies"].find({},show_record_id=False)
+    data = db["movies"].find({},{"genres":1},show_record_id=False)
     client.close()
-    movies = pd.DataFrame(list(data))
+    movies = pd.DataFrame(list(data)).dropna()
     genres = list(movies["genres"].unique())
     consolidate = []
     for genre in genres:
