@@ -87,10 +87,7 @@ const DataState = props => {
             dispatch({
                 type:SET_FILM,
                 payload:selection
-            }).catch(err => {
-            stopLoading()
-            setError(err.message,"danger")
-        });
+            });
     }
 
     const postSentiment = (data) => {

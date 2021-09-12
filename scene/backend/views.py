@@ -37,8 +37,8 @@ def backendView(request):
         films["rating"] = [float(x/20) for x in films["audience_rating"]]
         rec_films = films.sort_values("rating",ascending=False)[["movie_title","rating","directors","genres","youtubeId"]]
         rec_films.rename(columns={"directors":"director","genres":"genre"},inplace=True)
-        complete = rec_films[["movie_title","rating","director","genre","youtubeId"]].iloc[0].to_dict()
-        films = rec_films[["movie_title","rating","director","genre","youtubeId"]].sort_values("rating",ascending=False).iloc[:10]
+        films = rec_films[["movie_title","rating","director","genre","youtubeId"]].sample(frac=1).iloc[:10].sort_values("rating",ascending=False)
+        complete = films[["movie_title","rating","director","genre","youtubeId"]].iloc[0].to_dict()
         complete["films"]=list(films.to_dict("records"))
     except Exception as e:
         complete = {"movie_title":"Not Found"
