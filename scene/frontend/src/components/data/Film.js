@@ -2,7 +2,7 @@ import React, {useContext} from 'react'
 import DataContext from '../../context/data/dataContext'
 
 const Film = ({data}) => {
-    const {youtubeId,title} = data
+    const {youtubeId,title,films} = data
     const dataContext = useContext(DataContext)
     const { postSentiment } = dataContext
     const pack = data
@@ -35,7 +35,7 @@ const Film = ({data}) => {
                 </tbody>
             </table>
             </div>
-            <div className="row mt-2">
+{films.length > 0 ?            <div className="row mt-2">
                 <form className="col" onSubmit={onSentiment} name="like">
                     <div className="form-group col">
                         <button type="submit" name="like" class="btn btn-primary form-control bg-info">Like</button>
@@ -46,7 +46,7 @@ const Film = ({data}) => {
                         <button type="submit" name="dislike" class="btn btn-primary form-control bg-danger">Dislike</button>
                     </div>
                 </form>
-            </div>
+            </div>: <div></div>}
         </div>
     )
 }

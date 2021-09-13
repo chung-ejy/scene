@@ -21,7 +21,7 @@ const Form = () => {
                 {Object.keys(state).map(key =>(
                     key == "genre"  ? 
                     <div class="form-group">
-                        <select name="genre" onChange={onChange} class="form-control" id="exampleFormControlSelect1">
+                        <select placeholder="category" name="genre" onChange={onChange} class="form-control" id="exampleFormControlSelect1">
                         {genres.map(genre => <option>{genre}</option>)}
                         </select>
                     </div>
