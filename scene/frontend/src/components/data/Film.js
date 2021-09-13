@@ -5,10 +5,9 @@ const Film = ({data}) => {
     const {youtubeId,title} = data
     const dataContext = useContext(DataContext)
     const { postSentiment } = dataContext
+    const pack = data
     const onSentiment = (e) =>{
         e.preventDefault()
-        const pack = data
-        console.log(data)
         pack["sentiment"] = e.target.name
         postSentiment(pack)
     }

@@ -95,6 +95,7 @@ const DataState = props => {
         axios.post(`/api/data/`,data).then(res=>{
             dispatch({
                 type:POST_SENTIMENT,
+                payload:res.data,
             })
         }).catch(err => {
             stopLoading()

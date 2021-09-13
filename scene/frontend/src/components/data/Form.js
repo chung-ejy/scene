@@ -3,15 +3,13 @@ import DataContext from '../../context/data/dataContext'
 
 const Form = () => {
     const dataContext = useContext(DataContext)
-    const {getData,postSentiment,genres,data} = dataContext
-    const [state,setState] = useState({"director":"","genre":"Action & Adventure","rating":"3"})
+    const {getData,genres,data} = dataContext
+    const [state,setState] = useState({"movie_title":"","director":"","genre":"Action & Adventure","rating":"3"})
     const onChange = (e) => {
         setState({...state,[e.target.name]:e.target.value});
-        console.log(state)
     }
     const onSubmit = (e) => {
         e.preventDefault()
-        console.log(state)
         getData(state)
         setState({...data})
     }
@@ -27,8 +25,8 @@ const Form = () => {
                         {genres.map(genre => <option>{genre}</option>)}
                         </select>
                     </div>
-                    : key == "director"? 
-                    <div className="form-group mt-4">
+                    : key == "director" || key == "movie_title"? 
+                    <div className="form-group">
                         <input onChange={onChange} className="form-control" 
                         name={key} placeholder={key} type={"text"} value={state[key]} />
                     </div> : key == "rating"  ?
@@ -42,18 +40,6 @@ const Form = () => {
                     <button type="submit" class="btn btn-primary form-control">Recommend</button>
                 </div>
             </form>
-            {/* <div className="row mt-2">
-                <form className="col" onSubmit={onSentiment} name="like">
-                    <div className="form-group col">
-                        <button type="submit" name="like" class="btn btn-primary form-control bg-info">Like</button>
-                    </div>
-                </form>
-                <form className="col" onSubmit={onSentiment} name="dislike">
-                    <div className="form-group col">
-                        <button type="submit" name="dislike" class="btn btn-primary form-control bg-danger">Dislike</button>
-                    </div>
-                </form>
-            </div> */}
         </div>
     )
 }

@@ -45,10 +45,10 @@ const Films = () => {
                             <tr>
                             <td><form className="col" onSubmit={onSelect} name={film["movie_title"]}>
                                 <div className="form-group col">
-                                    <button style={{background: "none",
-                                                    color: "inherit",
+                                    <button className="text-primary" style={{background: "none",
                                                     border: "none",
                                                     padding: "0",
+                                                    textDecoration:"underline",
                                                     font: "inherit",
                                                     cursor: "pointer",
                                                     outline: "inherit"}}type="submit">{film["movie_title"]}</button>

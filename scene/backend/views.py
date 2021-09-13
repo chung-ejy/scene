@@ -12,19 +12,35 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 import certifi
-
 uri = os.getenv("MONGO_URI")
-
 @csrf_exempt
 def backendView(request):
     info = json.loads(request.body.decode("utf-8"))
     try:
-        genre = " ".join([x.title() for x in info["genre"].split(" ")])
-        director = " ".join([x.title() for x in info["director"].split(" ")])
+        movie_title = " ".join([x.title() for x in info["movie_title"].split(" ")])
+        if movie_title != "":
+            client = MongoClient(uri,27017,tlsCAFile=certifi.where())
+            print(movie_title)
+            db = client["scene"]
+            data = db["movies"].find({ "$text": { "$search": movie_title } },show_record_id=False).sort([( "score", { "$meta": "textScore" })])
+            films = pd.DataFrame(list(data))
+            print(films.head(1))
+            client.close()
+            if films.index.size > 0:
+                reference_film = films.iloc[0]
+                genre = reference_film["genres"].split(",")[0]
+                director = reference_film["directors"].split(",")[0]
+            else:
+                genre = "Not Found"
+                director = "Not Found"
+        else:
+            genre = " ".join([x.title() for x in info["genre"].split(" ")])
+            director = " ".join([x.title() for x in info["director"].split(" ")])
         if info["rating"] != "" : 
             rating = float(info["rating"]) 
         else:
-            rating =  0.0
+            rating =  3.0
+        print(genre,director,rating)
         client = MongoClient(uri,27017,tlsCAFile=certifi.where())
         db = client["scene"]
         data = db["movies"].find({
@@ -55,12 +71,18 @@ def backendView(request):
 def postView(request):
     info = json.loads(request.body.decode("utf-8"))
     try:
+        client = MongoClient(uri,27017,tlsCAFile=certifi.where())
         db = client["scene"]
         table = db["user_data"]
         table.insert(info)
+        client.close()
+        current_films = info["films"]
+        data = current_films.pop(0)
+        data["films"] = current_films
+        data["sentiment"] = "dislike"
     except Exception as e:
         print("rekt",str(e))
-    return JsonResponse({"hi":"hi"},safe=False)
+    return JsonResponse(data,safe=False)
 
 @csrf_exempt
 def getGenre(request):
@@ -73,9 +95,11 @@ def getGenre(request):
     consolidate = []
     for genre in genres:
         consolidate.extend([x.strip() for x in genre.split(",")])
-    final = list(set(consolidate))
-    final.sort()
+    final = []
     final.append("None")
+    others = list(set(consolidate))
+    others.sort()
+    final.extend(others)
     return JsonResponse({"genres":final},safe=False)
 
 # @csrf_exempt

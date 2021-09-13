@@ -38,6 +38,7 @@ export default(state,action) => {
         case POST_SENTIMENT:
                 return {
                     ...state,
+                    data:action.payload,
                     loading:false
             }
     }
