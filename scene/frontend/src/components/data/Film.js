@@ -2,7 +2,7 @@ import React, {useContext} from 'react'
 import DataContext from '../../context/data/dataContext'
 
 const Film = ({data}) => {
-    const {youtubeId,title,films} = data
+    const {youtubeId,imageId,title,films} = data
     const dataContext = useContext(DataContext)
     const { postSentiment } = dataContext
     const pack = data
@@ -14,9 +14,12 @@ const Film = ({data}) => {
     return (
         <div className="card card-body mt-4 mb-4">
             <div style={{height:"100%"}}class="row text-center">
-            <div class="embed-responsive embed-responsive-16by9">
+            {youtubeId != "" ?
+                <div class="col embed-responsive embed-responsive-16by9 text-center">
                 <iframe class="embed-responsive-item" src={`https://www.youtube.com/embed/${youtubeId}?rel=0`} allowFullScreen></iframe>
-            </div>
+            </div> : imageId != ""?             <div className="col">
+                <img src={imageId} class="img-fluid text-center" alt="..."/>
+            </div> : <div></div>}
             </div>
             <div className="row">
                 <h5 class="card-title text-center mb-1">
@@ -24,7 +27,7 @@ const Film = ({data}) => {
                 </h5>
             </div>
             <div className="row">
-            <table className="table table-responsive-sm">
+            <table className="col table table-responsive-sm">
                 <tbody>
                     {["movie_title","director","rating","genre"].map(key => (
                         <tr>
