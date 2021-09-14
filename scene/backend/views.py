@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from pymongo import MongoClient
 import math
 import requests as r
+from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 load_dotenv()
 import os
@@ -54,14 +55,33 @@ def backendView(request):
         rec_films = films.sort_values("rating",ascending=False)[["movie_title","rating","directors","genres","youtubeId"]]
         rec_films.rename(columns={"directors":"director","genres":"genre"},inplace=True)
         films = rec_films[["movie_title","rating","director","genre","youtubeId"]].sample(frac=1).iloc[:10].sort_values("rating",ascending=False)
-        complete = films[["movie_title","rating","director","genre","youtubeId"]].iloc[0].to_dict()
+        imageIds = []
+        for movie_title in films["movie_title"].unique():
+            try:
+                formatted = "_".join([x.title() for x in movie_title.split(" ")])
+                html = r.get(f"https://en.wikipedia.org/wiki/{formatted}").text
+                soup = BeautifulSoup(html,'html.parser').find(class_="infobox-image")
+                imageId = list(soup.children)[0]["href"]
+                url = f"https://en.wikipedia.org{imageId}"
+                html = r.get(url).text
+                print(url)
+                soup = BeautifulSoup(html,'html.parser').find(class_="fullImageLink")
+                imurl = list(soup.children)[0]["href"]
+                imagelink = f"https://{imurl}"
+                imageIds.append(imagelink)
+            except Exception as e:
+                print(str(e))
+                imageIds.append("")
+        films["imageId"] = imageIds
+        complete = films[["movie_title","rating","director","genre","youtubeId","imageId"]].iloc[0].to_dict()
         complete["films"]=list(films.to_dict("records"))
     except Exception as e:
         complete = {"movie_title":"Not Found"
                     ,"rating":"Not Found"
                     ,"director":"Not Found"
                     ,"genre":"Not Found"
-                    ,"youtubeId":"Not Found"
+                    ,"youtubeId":"Not Found",
+                    "imageId":"Not Found"
                     ,"films":[]}
         print(str(e),films.columns)
     complete["sentiment"] = False
