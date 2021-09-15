@@ -36,10 +36,19 @@ export default(state,action) => {
                 loading:false
             }
         case POST_SENTIMENT:
+            try {
                 return {
                     ...state,
                     data:action.payload,
                     loading:false
+                }
+            } catch (error) {
+                return {
+                    ...state,
+
+                    loading:false
+                }
             }
+
     }
 }

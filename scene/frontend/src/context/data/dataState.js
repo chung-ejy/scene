@@ -90,9 +90,9 @@ const DataState = props => {
             });
     }
 
-    const postSentiment = (data) => {
+    const postSentiment = (info) => {
         setLoading()
-        axios.post(`/api/data/`,data).then(res=>{
+        axios.post(`/api/data/`,info).then(res=>{
             dispatch({
                 type:POST_SENTIMENT,
                 payload:res.data,
