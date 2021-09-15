@@ -52,27 +52,9 @@ def backendView(request):
         client.close()
         films = pd.DataFrame(list(data))
         films["rating"] = [float(x/20) for x in films["audience_rating"]]
-        rec_films = films.sort_values("rating",ascending=False)[["movie_title","rating","directors","genres","youtubeId"]]
+        rec_films = films.sort_values("rating",ascending=False)[["movie_title","rating","directors","genres","youtubeId","imageId"]]
         rec_films.rename(columns={"directors":"director","genres":"genre"},inplace=True)
-        films = rec_films[["movie_title","rating","director","genre","youtubeId"]].sample(frac=1).iloc[:10].sort_values("rating",ascending=False)
-        imageIds = []
-        for movie_title in films["movie_title"].unique():
-            try:
-                formatted = "_".join([x.title() for x in movie_title.split(" ")])
-                html = r.get(f"https://en.wikipedia.org/wiki/{formatted}").text
-                soup = BeautifulSoup(html,'html.parser').find(class_="infobox-image")
-                imageId = list(soup.children)[0]["href"]
-                url = f"https://en.wikipedia.org{imageId}"
-                html = r.get(url).text
-                print(url)
-                soup = BeautifulSoup(html,'html.parser').find(class_="fullImageLink")
-                imurl = list(soup.children)[0]["href"]
-                imagelink = f"https://{imurl}"
-                imageIds.append(imagelink)
-            except Exception as e:
-                print(str(e))
-                imageIds.append("")
-        films["imageId"] = imageIds
+        films = rec_films[["movie_title","rating","director","genre","youtubeId","imageId"]].sample(frac=1).iloc[:10].sort_values("rating",ascending=False)
         complete = films[["movie_title","rating","director","genre","youtubeId","imageId"]].iloc[0].to_dict()
         complete["films"]=list(films.to_dict("records"))
     except Exception as e:
@@ -94,6 +76,7 @@ def postView(request):
         client = MongoClient(uri,27017,tlsCAFile=certifi.where())
         db = client["scene"]
         table = db["user_data"]
+        info["date"] = datetime.now()
         table.insert(info)
         client.close()
         current_films = info["films"]
@@ -101,6 +84,7 @@ def postView(request):
         data["films"] = current_films
         data["sentiment"] = "dislike"
     except Exception as e:
+        data = info
         print("rekt",str(e))
     return JsonResponse(data,safe=False)
 

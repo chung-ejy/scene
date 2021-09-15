@@ -1,15 +1,22 @@
-import React, {useContext} from 'react'
+import React, {useContext,useState, useEffect} from 'react'
 import DataContext from '../../context/data/dataContext'
-
+import axios from "axios"
 const Film = ({data}) => {
     const {youtubeId,imageId,title,films} = data
     const dataContext = useContext(DataContext)
     const { postSentiment } = dataContext
-    const pack = data
+    const [state,setState] = useState({...data,["sentiment"]:""})
+    const { sentiment } = state
+    const onSubmit = (e) => {
+        e.preventDefault()
+        if (state.sentiment != "") {
+            postSentiment(state)
+        }
+
+    }
     const onSentiment = (e) =>{
         e.preventDefault()
-        pack["sentiment"] = e.target.name
-        postSentiment(pack)
+        setState({...state,["sentiment"]:e.target.name})
     }
     return (
         <div className="card card-body mt-4 mb-4">
@@ -41,12 +48,17 @@ const Film = ({data}) => {
 {films.length > 0 ?            <div className="row mt-2">
                 <form className="col" onSubmit={onSentiment} name="like">
                     <div className="form-group col">
-                        <button type="submit" name="like" class="btn btn-primary form-control bg-info">Like</button>
+                        <button type="submit" name="like" class={`btn btn-primary form-control ${sentiment != "like" ? "bg-info" : "bg-danger"}`}>Like</button>
                     </div>
                 </form>
                 <form className="col" onSubmit={onSentiment} name="dislike">
                     <div className="form-group col">
-                        <button type="submit" name="dislike" class="btn btn-primary form-control bg-danger">Dislike</button>
+                        <button type="submit" name="dislike" class={`btn btn-primary form-control ${sentiment != "dislike" ? "bg-info" : "bg-danger"}`}>Dislike</button>
+                    </div>
+                </form>
+                <form className="col" onSubmit={onSubmit} name="dislike">
+                    <div className="form-group col">
+                        <button type="submit" name="Send Data" class="btn btn-primary form-control bg-danger">Send Data</button>
                     </div>
                 </form>
             </div>: <div></div>}
