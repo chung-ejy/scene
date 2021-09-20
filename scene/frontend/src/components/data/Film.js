@@ -1,6 +1,5 @@
-import React, {useContext,useState, useEffect} from 'react'
+import React, {useContext,useState } from 'react'
 import DataContext from '../../context/data/dataContext'
-import axios from "axios"
 const Film = ({data}) => {
     const {youtubeId,imageId,title,films} = data
     const dataContext = useContext(DataContext)
@@ -12,7 +11,6 @@ const Film = ({data}) => {
         if (state.sentiment != "") {
             postSentiment(state)
         }
-
     }
     const onSentiment = (e) =>{
         e.preventDefault()
@@ -22,9 +20,10 @@ const Film = ({data}) => {
         <div className="card card-body mt-4 mb-4">
             <div style={{height:"100%"}}class="row text-center">
             {youtubeId != "" ?
-                <div class="col embed-responsive embed-responsive-16by9 text-center">
-                <iframe class="embed-responsive-item" src={`https://www.youtube.com/embed/${youtubeId}?rel=0`} allowFullScreen></iframe>
-            </div> : imageId != ""?             <div className="col">
+            <div class="col embed-responsive embed-responsive-16by9 text-center">
+                <iframe style={{minWidth:"200px",minHeight:"200px"}} class="embed-responsive-item" src={`https://www.youtube.com/embed/${youtubeId}?rel=0`} allowFullScreen></iframe>
+            </div>
+        : imageId != ""?             <div className="col">
                 <img src={imageId} class="img-fluid text-center" alt="..."/>
             </div> : <div></div>}
             </div>
