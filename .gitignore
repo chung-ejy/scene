@@ -9,3 +9,4 @@ package-lock.json
 db.sqlite3
 *./ml/.env*
 *.ipynb*
+*certs/*

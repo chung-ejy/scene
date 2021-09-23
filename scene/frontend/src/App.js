@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 import ReactDOM from 'react-dom'
 import DataState from "./context/data/dataState"
 import Header from "./components/layout/Header"
+import Footer from "./components/layout/Footer"
 import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import Data from "./components/pages/data"
 import TermsOfService from "./components/pages/TermsOfService"
@@ -18,6 +19,7 @@ export const App = () => {
                     <Route exact path="/terms_of_service" component={TermsOfService}></Route>
                 </Switch>
             </div>
+            <Footer />
             </Router>
         </DataState>
     )

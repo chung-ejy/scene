@@ -1,27 +1,24 @@
 import React, {useContext,useState } from 'react'
 import DataContext from '../../context/data/dataContext'
-const Film = ({data}) => {
-    const {youtubeId,imageId,title,films} = data
+const Film = () => {
     const dataContext = useContext(DataContext)
-    const { postSentiment } = dataContext
+    const { data,postSentiment } = dataContext
     const [state,setState] = useState({...data,["sentiment"]:""})
     const { sentiment } = state
-    const onSubmit = (e) => {
-        e.preventDefault()
-        if (state.sentiment != "") {
-            postSentiment(state)
-        }
-    }
+    const {youtubeId,imageId,title,films} = data
     const onSentiment = (e) =>{
         e.preventDefault()
         setState({...state,["sentiment"]:e.target.name})
+        if (state.sentiment != "") {
+            postSentiment(state)
+        }
     }
     return (
         <div className="card card-body mt-4 mb-4">
             <div style={{height:"100%"}}class="row text-center">
             {youtubeId != "" ?
-            <div class="col embed-responsive embed-responsive-16by9 text-center">
-                <iframe style={{minWidth:"200px",minHeight:"200px"}} class="embed-responsive-item" src={`https://www.youtube.com/embed/${youtubeId}?rel=0`} allowFullScreen></iframe>
+            <div class="col d-none d-lg-block embed-responsive embed-responsive-16by9 text-center">
+                <iframe style={{minWidth:"800px",minHeight:"360px"}} class="embed-responsive-item" src={`https://www.youtube.com/embed/${youtubeId}?rel=0`} allowFullScreen></iframe>
             </div>
         : imageId != ""?             <div className="col">
                 <img src={imageId} class="img-fluid text-center" alt="..."/>
@@ -53,11 +50,6 @@ const Film = ({data}) => {
                 <form className="col" onSubmit={onSentiment} name="dislike">
                     <div className="form-group col">
                         <button type="submit" name="dislike" class={`btn btn-primary form-control ${sentiment != "dislike" ? "bg-info" : "bg-danger"}`}>Dislike</button>
-                    </div>
-                </form>
-                <form className="col" onSubmit={onSubmit} name="dislike">
-                    <div className="form-group col">
-                        <button type="submit" name="Send Data" class="btn btn-primary form-control bg-danger">Send Data</button>
                     </div>
                 </form>
             </div>: <div></div>}

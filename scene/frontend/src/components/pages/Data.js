@@ -1,7 +1,6 @@
 import React, {useContext,useEffect,Fragment} from 'react';
 import DataContext from "../../context/data/dataContext"
 import Alert from "../alerts/Alert"
-// import Sentiment from '../sentiment/Sentiment';
 import Form from '../data/Form';
 import Film from "../data/Film"
 import Films from "../data/Films"
@@ -16,31 +15,29 @@ const Data = () => {
     return (
         <div className="card mt-4">
             <div className="card-body align-content-center justify-content-center">
-                {loading || title.size < 1 ? (
-                    <div className="container justify-content-center">
-                        <h1 className="container justify-content-center">
+            <div className="container text-center justify-content-center">
+                        <h1>
                             {title[0].toUpperCase() + title.slice(1)}
                         </h1>
+                {loading ? (
+                    <Fragment>
                         <h3 className="text-center">
                             <i className="fas fa-spinner text-primary fa-7x"></i>
                         </h3>
-                        <h3 className="text-center mt-3">
+                        {/* <h3 className="text-center mt-3">
                             {"loading..."}
-                        </h3>
-                    </div>) : (
+                        </h3> */}
+                    </Fragment>
+                        ) : (
                         <Fragment>
                             <Alert />
-                            <h1 className="card-title text-center mx-2">
-                            {title[0].toUpperCase() + title.slice(1)}
-                            </h1>
                             <Form />
-                            <Film data={data}/>
-                            <Films />
+                            <Film   />
+                            {/* <Films /> */}
                         </Fragment>
-
                     )
-
                 }
+                </div>
             </div>
         </div>
     );
