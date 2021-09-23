@@ -6,14 +6,16 @@ const Films = () => {
     const {setFilm,data} = dataContext
     const {films} = data
     const [state,setState] = useState({"rating":""})
+
     const onRatingChange = (e) =>{
         setState({...state,[e.target.name]:e.target.value})
     }
+
     const onSelect = (e) =>{
         e.preventDefault()
-        const selection = films.filter(film => e.target.name == film["movie_title"])[0]
-        selection["films"] = films
-        setFilm(selection)
+        // const selection = films.filter(film => e.target.name == film["movie_title"])[0]
+        // selection["films"] = films
+        // setFilm(selection)
     }
 
     return (

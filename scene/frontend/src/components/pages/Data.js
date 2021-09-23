@@ -6,7 +6,7 @@ import Film from "../data/Film"
 import Films from "../data/Films"
 const Data = () => {
     const dataContext = useContext(DataContext)
-    const {data,loading,title,getGenres,genres} = dataContext;
+    const {loading,title,getGenres} = dataContext;
     useEffect(() => {
         getGenres()
     },//eslint-disable-next-line
@@ -22,18 +22,15 @@ const Data = () => {
                 {loading ? (
                     <Fragment>
                         <h3 className="text-center">
-                            <i className="fas fa-spinner text-primary fa-7x"></i>
+                            <i className="fas fa-film text-primary fa-7x"></i>
                         </h3>
-                        {/* <h3 className="text-center mt-3">
-                            {"loading..."}
-                        </h3> */}
                     </Fragment>
                         ) : (
                         <Fragment>
                             <Alert />
                             <Form />
                             <Film   />
-                            {/* <Films /> */}
+                            <Films />
                         </Fragment>
                     )
                 }
