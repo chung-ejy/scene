@@ -24,13 +24,13 @@ def searchView(request):
             rating = float(info["rating"]) 
         else:
             rating =  3.0
+        client = MongoClient(uri,27017,tlsCAFile=certifi.where())
+        db = client["scene"]
         if search != "":
             genre = " ".join([x.title() for x in info["genre"].split(" ")])
             director = " ".join([x.title() for x in info["search"].split(" ")])
             actors = " ".join([x.title() for x in info["search"].split(" ")])
             automate = {"directors":{"search":director},"actors":{"search":actors}}
-            client = MongoClient(uri,27017,tlsCAFile=certifi.where())
-            db = client["scene"]
             for key in automate:
                 huh = automate[key]["search"]
                 data = db["movies"].find({
