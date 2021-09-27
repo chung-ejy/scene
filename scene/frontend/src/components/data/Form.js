@@ -4,7 +4,13 @@ import DataContext from '../../context/data/dataContext'
 const Form = () => {
     const dataContext = useContext(DataContext)
     const {getData,genres,data} = dataContext
-    const [state,setState] = useState({"movie_title":"","director":"","genre":"Action & Adventure","rating":"3"})
+    const [state,setState] = useState({
+                                        // "movie_title":""
+                                        // ,"director":"",
+                                        "search":"",
+                                        "genre":"Action & Adventure"
+                                        ,"rating":"3"
+                                        })
     const onChange = (e) => {
         setState({...state,[e.target.name]:e.target.value});
     }
@@ -25,7 +31,7 @@ const Form = () => {
                         {genres.map(genre => <option key={genre}>{genre}</option>)}
                         </select>
                     </div>
-                    : key == "director" || key == "movie_title"? 
+                    : key == "director" || key == "movie_title" || key =="search"? 
                     <div key={key} className="form-group">
                         <input onChange={onChange} className="form-control" 
                         name={key} placeholder={key} type={"text"} value={state[key]} />

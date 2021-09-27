@@ -1,9 +1,9 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom'
 import DataState from "./context/data/dataState"
 import Header from "./components/layout/Header"
 import Footer from "./components/layout/Footer"
-import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import Data from "./components/pages/data"
 import TermsOfService from "./components/pages/TermsOfService"
 import Alert from './components/alerts/Alert'

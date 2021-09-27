@@ -7,7 +7,14 @@ import axios from "axios"
 const DataState = props => {
     const initialState = {
         title: "Scene",
-        data: {"movie_title":"The Royal Tenenbaums","director":"Wes Anderson","genre":"Comedy","rating":4.45,"youtubeId":"caMgokYWboU","imageId":"https://upload.wikimedia.org/wikipedia/en/3/3b/The_Tenenbaums.jpg","films":[]},
+        data: {"movie_title":"The Royal Tenenbaums",
+                "director":"Wes Anderson",
+                "genre":"Comedy",
+                "rating":4.45,
+                "youtubeId":"caMgokYWboU",
+                "imageId":"https://upload.wikimedia.org/wikipedia/en/3/3b/The_Tenenbaums.jpg",
+                "search":"",
+                "films":[]},
         error:null,
         loading:false,
         genres:[]
@@ -58,7 +65,7 @@ const DataState = props => {
 
     const getData = (data) => {
         setLoading()
-        axios.post(`/api/`,data).then(res=>{
+        axios.post(`/api/search/`,data).then(res=>{
             dispatch({
                 type:GET_DATA,
                 payload:res.data

@@ -14,6 +14,82 @@ load_dotenv()
 import os
 import certifi
 uri = os.getenv("MONGO_URI")
+
+@csrf_exempt
+def searchView(request):
+    info = json.loads(request.body.decode("utf-8"))
+    try:
+        search = " ".join([x.title() for x in info["search"].split(" ")])
+        if info["rating"] != "" : 
+            rating = float(info["rating"]) 
+        else:
+            rating =  3.0
+        if search != "":
+            genre = " ".join([x.title() for x in info["genre"].split(" ")])
+            director = " ".join([x.title() for x in info["search"].split(" ")])
+            actors = " ".join([x.title() for x in info["search"].split(" ")])
+            automate = {"directors":{"search":director},"actors":{"search":actors}}
+            client = MongoClient(uri,27017,tlsCAFile=certifi.where())
+            db = client["scene"]
+            for key in automate:
+                huh = automate[key]["search"]
+                data = db["movies"].find({
+                            'genres':{'$regex':f"^.*{genre}.*$"},
+                            key:{'$regex':f"^.*{huh}.*$"},
+                        "audience_rating":{"$gte":rating*20}
+                        },show_record_id=False)
+                query = pd.DataFrame(list(data))
+                automate[key]["result"] = query
+            films = pd.concat([automate[x]["result"] for x in list(automate.keys())])
+            if films.index.size < 1:
+                data = db["movies"].find({ "$text": { "$search": search },
+                                        "audience_rating":{"$gte":rating*20} 
+                                        },show_record_id=False).sort([( "score", { "$meta": "textScore" })])
+                films = pd.DataFrame(list(data))
+                if films.index.size > 0:
+                    reference_film = films.iloc[0]
+                    genre = reference_film["genres"].split(",")[0]
+                    director = ""
+                    data = db["movies"].find({
+                                'genres':{'$regex':f"^.*{genre}.*$"},
+                            "audience_rating":{"$gte":rating*20}
+                            },show_record_id=False)
+                    stuff = list(data)
+                    stuff.insert(0,reference_film.to_dict())
+                    films = pd.DataFrame(stuff)
+            else:
+                reference_film = films.iloc[0]
+        else:
+            genre = " ".join([x.title() for x in info["genre"].split(" ")])
+            data = db["movies"].find({
+                            'genres':{'$regex':f"^.*{genre}.*$"},
+                        "audience_rating":{"$gte":rating*20}
+                        },show_record_id=False)
+            films = pd.DataFrame(list(data))
+            reference_film = films.iloc[0]
+        client.close()
+        films["rating"] = [float(x/20) for x in films["audience_rating"]]
+        rec_films = films.sort_values("rating",ascending=False)[["movie_title","rating","directors","genres","youtubeId","imageId"]]
+        rec_films.rename(columns={"directors":"director","genres":"genre"},inplace=True)
+        reference_film["director"] = reference_film["directors"]
+        reference_film["genre"] = reference_film["genres"]
+        reference_film["rating"] = float(reference_film["audience_rating"]/20)
+        films = rec_films[["movie_title","rating","director","genre","youtubeId","imageId"]].sample(frac=1).iloc[:10].sort_values("rating",ascending=False)
+        complete = reference_film[["movie_title","rating","director","genre","youtubeId","imageId"]].to_dict()
+        complete["films"]=list(films.to_dict("records"))
+    except Exception as e:
+        complete = {"movie_title":"Not Found"
+                    ,"rating":"Not Found"
+                    ,"director":"Not Found"
+                    ,"genre":"Not Found"
+                    ,"youtubeId":"Not Found",
+                    "imageId":"Not Found"
+                    ,"films":[]}
+        print(str(e))
+    complete["sentiment"] = False
+    complete["search"] = ""
+    return JsonResponse(complete,safe=False)
+
 @csrf_exempt
 def backendView(request):
     info = json.loads(request.body.decode("utf-8"))
@@ -30,7 +106,8 @@ def backendView(request):
             if films.index.size > 0:
                 reference_film = films.iloc[0]
                 genre = reference_film["genres"].split(",")[0]
-                director = reference_film["directors"].split(",")[0]
+                # director = reference_film["directors"].split(",")[0]
+                director = ""
             else:
                 genre = "Not Found"
                 director = "Not Found"
