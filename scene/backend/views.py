@@ -20,6 +20,8 @@ def searchView(request):
     info = json.loads(request.body.decode("utf-8"))
     try:
         search = " ".join([x.title() for x in info["search"].split(" ")])
+        if info["genre"] == "Genre":
+            genre = ""
         if info["rating"] != "" : 
             rating = float(info["rating"]) 
         else:
@@ -69,13 +71,21 @@ def searchView(request):
             reference_film = films.iloc[0]
         client.close()
         films["rating"] = [float(x/20) for x in films["audience_rating"]]
-        rec_films = films.sort_values("rating",ascending=False)[["movie_title","rating","directors","genres","youtubeId","imageId"]]
-        rec_films.rename(columns={"directors":"director","genres":"genre"},inplace=True)
+        rec_films = films.sort_values("rating",ascending=False)[["movie_title","rating","directors","genres","actors","youtubeId","imageId"]]
+        try:
+            rec_films["actors"] = [str(x).split(",")[:10] for x in rec_films["actors"]]
+        except:
+            rec_films["actors"] = ""
+        rec_films.rename(columns={"directors":"director","genres":"genre","actors":"starring"},inplace=True)
         reference_film["director"] = reference_film["directors"]
         reference_film["genre"] = reference_film["genres"]
+        try:
+            reference_film["starring"] = [str(x).split(",")[:10] for x in reference_film["actors"]]
+        except:
+            reference_film["starring"] = ""
         reference_film["rating"] = float(reference_film["audience_rating"]/20)
-        films = rec_films[["movie_title","rating","director","genre","youtubeId","imageId"]].sample(frac=1).iloc[:10].sort_values("rating",ascending=False)
-        complete = reference_film[["movie_title","rating","director","genre","youtubeId","imageId"]].to_dict()
+        films = rec_films[["movie_title","rating","director","genre","starring","youtubeId","imageId"]].sample(frac=1).iloc[:10].sort_values("rating",ascending=False)
+        complete = reference_film[["movie_title","rating","director","genre","starring","youtubeId","imageId"]].to_dict()
         complete["films"]=list(films.to_dict("records"))
     except Exception as e:
         complete = {"movie_title":"Not Found"
@@ -83,7 +93,8 @@ def searchView(request):
                     ,"director":"Not Found"
                     ,"genre":"Not Found"
                     ,"youtubeId":"Not Found",
-                    "imageId":"Not Found"
+                    "imageId":"Not Found",
+                    "starring":"Not Found"
                     ,"films":[]}
         print(str(e))
     complete["sentiment"] = False
@@ -177,7 +188,7 @@ def getGenre(request):
     for genre in genres:
         consolidate.extend([x.strip() for x in genre.split(",")])
     final = []
-    final.append("None")
+    final.append("Genre")
     others = list(set(consolidate))
     others.sort()
     final.extend(others)

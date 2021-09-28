@@ -28,6 +28,7 @@ const Films = () => {
                         <th scope="col">Movie Title</th>
                         <th className="d-none d-lg-block" scope="col">Genre</th>
                         <th scope="col">Director</th>
+                        {/* <th className="d-none d-lg-block" scope="col">Starring</th> */}
                         <th className="d-none d-lg-block" scope="col">
                         <form className="form-inline">
                             <div className="form-group">
@@ -58,6 +59,7 @@ const Films = () => {
                             </form></td>
                             <td className="d-none d-lg-block">{film["genre"]}</td>
                             <td >{film["director"]}</td>
+                            {/* <td className="d-none d-lg-block">{film["starring"]}</td> */}
                             <td className="d-none d-lg-block">{`${film["rating"]}    `}</td>
                         </tr> : <tr></tr>
                     ))}

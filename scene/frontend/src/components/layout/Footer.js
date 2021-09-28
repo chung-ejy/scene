@@ -10,6 +10,9 @@ export class Header extends Component {
                             YouTube Terms of Service
                         </a></li>
                     <li className="nav-item">
+                        <text className="nav-link px-2 text-muted">©2021</text>
+                    </li>
+                    <li className="nav-item">
                         <a className="nav-link px-2 text-muted"href="https://policies.google.com/privacy?hl=en-US">
                             Google Privacy Policy
                         </a></li>

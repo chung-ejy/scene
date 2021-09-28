@@ -9,7 +9,7 @@ const Form = () => {
                                         // ,"director":"",
                                         "search":"",
                                         "genre":"Action & Adventure"
-                                        ,"rating":"3"
+                                        ,"rating":"2.5"
                                         })
     const onChange = (e) => {
         setState({...state,[e.target.name]:e.target.value});

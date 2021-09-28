@@ -7,12 +7,12 @@ import axios from "axios"
 const DataState = props => {
     const initialState = {
         title: "Scene",
-        data: {"movie_title":"The Royal Tenenbaums",
-                "director":"Wes Anderson",
-                "genre":"Comedy",
+        data: {"movie_title":"",
+                "director":"",
+                "genre":"",
                 "rating":4.45,
-                "youtubeId":"caMgokYWboU",
-                "imageId":"https://upload.wikimedia.org/wikipedia/en/3/3b/The_Tenenbaums.jpg",
+                "youtubeId":"",
+                "imageId":"",
                 "search":"",
                 "films":[]},
         error:null,

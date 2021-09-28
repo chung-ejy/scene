@@ -30,16 +30,16 @@ const Film = () => {
                 </h5>
             </div>
             <div className="row">
-            <table className="col table table-responsive-sm">
+{            data["movie_title"] != "" ? <table className="col table table-responsive-sm">
                 <tbody>
-                    {["movie_title","director","rating","genre"].map(key => (
+                    {["movie_title","director","rating","genre","starring"].map(key => (
                         <tr key={key}>
                             <td>{key.replace("_"," ")}</td>
-                            <td>{data[key]}</td>
+                            <td style={{wordWrap:"break-word"}}>{data[key]}</td>
                         </tr>
                     ))}
                 </tbody>
-            </table>
+            </table> : <div></div>}
             </div>
 {films.length > 0 ?            <div className="row mt-2">
                 <form className="col" onSubmit={onSentiment} name="like">
