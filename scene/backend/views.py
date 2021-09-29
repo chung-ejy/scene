@@ -18,6 +18,7 @@ uri = os.getenv("MONGO_URI")
 @csrf_exempt
 def searchView(request):
     info = json.loads(request.body.decode("utf-8"))
+    print(info)
     try:
         search = " ".join([x.title() for x in info["search"].split(" ")])
         if info["genre"] == "Genre":
@@ -73,14 +74,14 @@ def searchView(request):
         films["rating"] = [float(x/20) for x in films["audience_rating"]]
         rec_films = films.sort_values("rating",ascending=False)[["movie_title","rating","directors","genres","actors","youtubeId","imageId"]]
         try:
-            rec_films["actors"] = [str(x).split(",")[:10] for x in rec_films["actors"]]
+            rec_films["actors"] = [",".join(str(x).split(",")[:10]) for x in rec_films["actors"]]
         except:
             rec_films["actors"] = ""
         rec_films.rename(columns={"directors":"director","genres":"genre","actors":"starring"},inplace=True)
         reference_film["director"] = reference_film["directors"]
         reference_film["genre"] = reference_film["genres"]
         try:
-            reference_film["starring"] = [str(x).split(",")[:10] for x in reference_film["actors"]]
+            reference_film["starring"] = [",".join(str(x).split(",")[:10]) for x in reference_film["actors"]]
         except:
             reference_film["starring"] = ""
         reference_film["rating"] = float(reference_film["audience_rating"]/20)

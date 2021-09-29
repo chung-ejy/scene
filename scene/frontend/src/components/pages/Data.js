@@ -30,7 +30,7 @@ const Data = () => {
                             <Alert />
                             <Form />
                             <Film   />
-                            <Films />
+                            {/* <Films /> */}
                         </Fragment>
                     )
                 }

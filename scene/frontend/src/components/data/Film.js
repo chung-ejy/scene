@@ -3,8 +3,8 @@ import DataContext from '../../context/data/dataContext'
 const Film = () => {
     const dataContext = useContext(DataContext)
     const { data,postSentiment } = dataContext
-    const [state,setState] = useState({...data,["sentiment"]:""})
-    const { sentiment } = state
+    const [state,setState] = useState({...data,["sentiment"]:"",["show_starring"]:false})
+    const { sentiment ,show_starring} = state
     const {youtubeId,imageId,title,films} = data
     const onSentiment = (e) =>{
         e.preventDefault()
@@ -13,6 +13,12 @@ const Film = () => {
             postSentiment(state)
         }
     }
+
+    const clickStarring = (e) =>{
+        e.preventDefault()
+        setState({...state,["show_starring"]:!show_starring})
+    }
+
     return (
         <div className="card card-body mt-4 mb-4">
             <div style={{height:"100%"}}className="row text-center">
@@ -32,12 +38,29 @@ const Film = () => {
             <div className="row">
 {            data["movie_title"] != "" ? <table className="col table table-responsive-sm">
                 <tbody>
-                    {["movie_title","director","rating","genre","starring"].map(key => (
+                    {["movie_title","director","rating","genre"].map(key => (
                         <tr key={key}>
                             <td>{key.replace("_"," ")}</td>
                             <td style={{wordWrap:"break-word"}}>{data[key]}</td>
                         </tr>
                     ))}
+                    <tr key={"starring"}>
+                    <td>starring</td>
+                    <td><form className="col" onSubmit={clickStarring}>
+                    <div className="form-group col">
+                        <button className="text-primary" style={{background: "none",
+                                        border: "none",
+                                        padding: "0",
+                                        textDecoration:"underline",
+                                        font: "inherit",
+                                        cursor: "pointer",
+                                        outline: "inherit"}}type="submit">
+                        {show_starring ? data["starring"]:<i class="fas fa-plus-circle fx-3"></i>}
+                        </button>
+                    </div>
+                    </form>
+                    </td>
+                </tr>
                 </tbody>
             </table> : <div></div>}
             </div>
