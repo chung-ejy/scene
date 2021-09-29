@@ -129,10 +129,10 @@ def backendView(request):
         else:
             genre = " ".join([x.title() for x in info["genre"].split(" ")])
             director = " ".join([x.title() for x in info["director"].split(" ")])
-        # if info["rating"] != "" : 
-        #     rating = float(info["rating"]) 
-        # else:
-        #     rating =  3.0
+        if info["rating"] != "" : 
+            rating = float(info["rating"]) 
+        else:
+            rating =  3.0
         print(genre,director,rating)
         client = MongoClient(uri,27017,tlsCAFile=certifi.where())
         db = client["scene"]
