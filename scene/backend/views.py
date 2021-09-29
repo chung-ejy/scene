@@ -87,7 +87,10 @@ def searchView(request):
         reference_film["rating"] = float(reference_film["audience_rating"]/20)
         films = rec_films[["movie_title","rating","director","genre","starring","youtubeId","imageId"]].sample(frac=1).iloc[:10].sort_values("rating",ascending=False)
         complete = reference_film[["movie_title","rating","director","genre","starring","youtubeId","imageId"]].to_dict()
-        complete["films"]=list(films.to_dict("records"))
+        try:
+            complete["films"]=list(films.to_dict("records"))
+        except:
+            complete["films"] = []
     except Exception as e:
         complete = {"movie_title":"Not Found"
                     ,"rating":"Not Found"
@@ -126,10 +129,10 @@ def backendView(request):
         else:
             genre = " ".join([x.title() for x in info["genre"].split(" ")])
             director = " ".join([x.title() for x in info["director"].split(" ")])
-        if info["rating"] != "" : 
-            rating = float(info["rating"]) 
-        else:
-            rating =  3.0
+        # if info["rating"] != "" : 
+        #     rating = float(info["rating"]) 
+        # else:
+        #     rating =  3.0
         print(genre,director,rating)
         client = MongoClient(uri,27017,tlsCAFile=certifi.where())
         db = client["scene"]
